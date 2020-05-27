@@ -10,11 +10,11 @@ use PoP\API\Configuration\Request;
 trait ClientTrait
 {
     /**
-     * Vendor Dir Path
+     * Relative Path
      *
      * @return string
      */
-    abstract protected function getVendorDirPath(): string;
+    abstract protected function getClientRelativePath(): string;
     /**
      * JavaScript file name
      *
@@ -35,7 +35,7 @@ trait ClientTrait
      *
      * @return string
      */
-    protected function getAssetsDirname(): string
+    protected function getAssetDirname(): string
     {
         return 'assets';
     }
@@ -44,13 +44,16 @@ trait ClientTrait
      *
      * @return string
      */
-    abstract protected function getBaseDir(): string;
+    abstract protected function getComponentBaseDir(): string;
     /**
      * Base URL
      *
-     * @return string
+     * @return string|null
      */
-    abstract protected function getBaseURL(): string;
+    protected function getComponentBaseURL(): ?string
+    {
+        return null;
+    }
     /**
      * Endpoint URL
      *
@@ -66,8 +69,8 @@ trait ClientTrait
     public function getClientHTML(): string
     {
         // Read from the static HTML files and replace their endpoints
-        $dirPath = $this->getVendorDirPath();
-        $file = $this->getBaseDir() . $dirPath . '/' . $this->getIndexFilename();
+        $assetRelativePath = $this->getClientRelativePath();
+        $file = $this->getComponentBaseDir() . $assetRelativePath . '/' . $this->getIndexFilename();
         $fileContents = \file_get_contents($file, true);
         $jsFileName = $this->getJSFilename();
         /**
@@ -75,11 +78,13 @@ trait ClientTrait
          * different than the URL under which the client is accessed.
          * Then add the URL to the plugin to all assets (they are all located under "assets/...")
          */
-        $fileContents = \str_replace(
-            '"' . $this->getAssetsDirname() . '/',
-            '"' . \trim($this->getBaseURL(), '/') . $dirPath . '/' . $this->getAssetsDirname() . '/',
-            $fileContents
-        );
+        if ($componentBaseURL = $this->getComponentBaseURL()) {
+            $fileContents = \str_replace(
+                '"' . $this->getAssetDirname() . '/',
+                '"' . \trim($this->getComponentBaseURL(), '/') . $assetRelativePath . '/' . $this->getAssetDirname() . '/',
+                $fileContents
+            );
+        }
 
         // Current domain
         $endpointURL = $this->getEndpointURL();
