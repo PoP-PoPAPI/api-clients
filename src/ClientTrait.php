@@ -6,6 +6,7 @@ namespace PoP\APIClients;
 
 use PoP\ComponentModel\ComponentConfiguration as ComponentModelComponentConfiguration;
 use PoP\API\Configuration\Request;
+use PoP\ComponentModel\Misc\GeneralUtils;
 
 trait ClientTrait
 {
@@ -89,7 +90,12 @@ trait ClientTrait
         // Current domain
         $endpointURL = $this->getEndpointURL();
         if (ComponentModelComponentConfiguration::namespaceTypesAndInterfaces()) {
-            $endpointURL = \add_query_arg(Request::URLPARAM_USE_NAMESPACE, true, $endpointURL);
+            $endpointURL = GeneralUtils::addQueryArgs(
+                [
+                    Request::URLPARAM_USE_NAMESPACE => true,
+                ],
+                $endpointURL
+            );
         }
         // Modify the endpoint, as a param to the script
         $fileContents = \str_replace(
