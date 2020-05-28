@@ -82,7 +82,7 @@ trait ClientTrait
         if ($componentBaseURL = $this->getComponentBaseURL()) {
             $fileContents = \str_replace(
                 '"' . $this->getAssetDirname() . '/',
-                '"' . \trim($this->getComponentBaseURL(), '/') . $assetRelativePath . '/' . $this->getAssetDirname() . '/',
+                '"' . \trim($componentBaseURL, '/') . $assetRelativePath . '/' . $this->getAssetDirname() . '/',
                 $fileContents
             );
         }
