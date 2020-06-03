@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PoP\APIClients;
 
 use PoP\API\Configuration\Request;
-use PoP\APIEndpoints\EndpointUtils;
 use PoP\ComponentModel\Misc\GeneralUtils;
 use PoP\ComponentModel\ComponentConfiguration as ComponentModelComponentConfiguration;
 
