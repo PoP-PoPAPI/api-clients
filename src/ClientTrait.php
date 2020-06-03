@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace PoP\APIClients;
 
-use PoP\ComponentModel\ComponentConfiguration as ComponentModelComponentConfiguration;
 use PoP\API\Configuration\Request;
+use PoP\APIEndpoints\EndpointUtils;
 use PoP\ComponentModel\Misc\GeneralUtils;
+use PoP\ComponentModel\ComponentConfiguration as ComponentModelComponentConfiguration;
 
 trait ClientTrait
 {
@@ -87,7 +88,7 @@ trait ClientTrait
             );
         }
 
-        // Current domain
+        // Can pass either URL or path under current domain
         $endpointURL = $this->getEndpointURL();
         if (ComponentModelComponentConfiguration::namespaceTypesAndInterfaces()) {
             $endpointURL = GeneralUtils::addQueryArgs(
