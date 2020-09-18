@@ -33,8 +33,6 @@ trait ClientTrait
     }
     /**
      * Assets folder name
-     *
-     * @return string
      */
     protected function getAssetDirname(): string
     {
@@ -80,9 +78,13 @@ trait ClientTrait
          * Then add the URL to the plugin to all assets (they are all located under "assets/...")
          */
         if ($componentBaseURL = $this->getComponentBaseURL()) {
+            // The client could have several folders where to store the assets
+            // GraphiQL Explorer loads under "/assets...", so the dirname starts with "/"
+            // But otherwise it does not. So don't add "/" again if it already has
+            $assetDirname = $this->getAssetDirname();
             $fileContents = \str_replace(
-                '"' . $this->getAssetDirname() . '/',
-                '"' . \trim($componentBaseURL, '/') . $assetRelativePath . '/' . $this->getAssetDirname() . '/',
+                '"' . $assetDirname . '/',
+                '"' . \trim($componentBaseURL, '/') . $assetRelativePath . (\str_starts_with($assetDirname, '/') ? '' : '/') . $assetDirname . '/',
                 $fileContents
             );
         }
@@ -97,10 +99,12 @@ trait ClientTrait
                 $endpointURL
             );
         }
-        // Modify the endpoint, as a param to the script
+        // Modify the endpoint, as a param to the script.
+        // GraphiQL Explorer doesn't have other params. Otherwise it does, so check for "?"
+        $jsFileHasParams = \str_contains($fileContents, '/' . $jsFileName . '?');
         $fileContents = \str_replace(
-            '/' . $jsFileName . '?',
-            '/' . $jsFileName . '?endpoint=' . urlencode($endpointURL) . '&',
+            '/' . $jsFileName . ($jsFileHasParams ? '?' : ''),
+            '/' . $jsFileName . '?endpoint=' . urlencode($endpointURL) . ($jsFileHasParams ? '&' : ''),
             $fileContents
         );
 
