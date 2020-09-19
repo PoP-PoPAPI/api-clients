@@ -10,6 +10,8 @@ use PoP\ComponentModel\ComponentConfiguration as ComponentModelComponentConfigur
 
 trait ClientTrait
 {
+    private ?string $clientHTMLCache = null;
+
     /**
      * Relative Path
      *
@@ -67,6 +69,9 @@ trait ClientTrait
      */
     public function getClientHTML(): string
     {
+        if ($this->clientHTMLCache !== null) {
+            return $this->clientHTMLCache;
+        }
         // Read from the static HTML files and replace their endpoints
         $assetRelativePath = $this->getClientRelativePath();
         $file = $this->getComponentBaseDir() . $assetRelativePath . '/' . $this->getIndexFilename();
@@ -108,7 +113,8 @@ trait ClientTrait
             $fileContents
         );
 
-        return $fileContents;
+        $this->clientHTMLCache = $fileContents;
+        return $this->clientHTMLCache;
     }
 
     /**
