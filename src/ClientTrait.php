@@ -96,14 +96,15 @@ trait ClientTrait
 
         // Can pass either URL or path under current domain
         $endpointURL = $this->getEndpointURL();
-        if (ComponentModelComponentConfiguration::namespaceTypesAndInterfaces()) {
-            $endpointURL = GeneralUtils::addQueryArgs(
-                [
-                    Request::URLPARAM_USE_NAMESPACE => true,
-                ],
-                $endpointURL
-            );
-        }
+        // // If namespaced, add /?use_namespace=1 to the endpoint
+        // if (ComponentModelComponentConfiguration::namespaceTypesAndInterfaces()) {
+        //     $endpointURL = GeneralUtils::addQueryArgs(
+        //         [
+        //             Request::URLPARAM_USE_NAMESPACE => true,
+        //         ],
+        //         $endpointURL
+        //     );
+        // }
         // Modify the endpoint, as a param to the script.
         // GraphiQL Explorer doesn't have other params. Otherwise it does, so check for "?"
         $jsFileHasParams = \str_contains($fileContents, '/' . $jsFileName . '?');
